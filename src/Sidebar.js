@@ -3,41 +3,50 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 
-function Sidebar({ items }) {
 
-
-
-
+function SidebarItem({ label, items, depthStep = 10, depth = 0, ...rest }) {
   return (
-    <List disablePadding dense>
+    <>
+      <ListItem button dense {...rest}>
+        <ListItemText style={{ paddingLeft: depth * depthStep }}>
+          <span>{label}</span>
+        </ListItemText>
+      </ListItem>
+      {Array.isArray(items) ? (
+        <List disablePadding dense>
+          {items.map((subItem) => (
+            <SidebarItem
+              key={subItem.name}
+              depth={depth + 1}
+              depthStep={depthStep}
+              {...subItem}
+            />
+          ))}
+        </List>
+      ) : null}
+    </>
+  )
+}
 
-      <ListItem button>
-        {items.map(({label, name, ...rest}) => (
-          <ListItem key={name} button {...rest}>
-            <ListItemText>{label}</ListItemText>
-          </ListItem>
+
+
+function Sidebar({ items, depthStep, depth }) {
+  return (
+
+    <div className="sidebar">
+      <List disablePadding dense>
+        {items.map((sidebarItem, index) => (
+        
+          <SidebarItem
+            key={`${sidebarItem.name}${index}`}
+            depthStep={depthStep}
+            depth={depth}
+            {...sidebarItem}
+          />
         ))}
-      </ListItem>
+      </List>
+    </div >
 
-    </List>
-
-    /*
-
-    <ListItem button>
-            <ListItemText>{item.label}</ListItemText>
-          </ListItem>
-    <List disablePadding dense>
-      <ListItem button>
-        <ListItemText>Home</ListItemText>
-      </ListItem>
-      <ListItem button>
-        <ListItemText>Billing</ListItemText>
-      </ListItem>
-      <ListItem button>
-        <ListItemText>Settings</ListItemText>
-      </ListItem>
-    </List>
-    */
   )
 }
 
